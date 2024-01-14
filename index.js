@@ -21,16 +21,20 @@ addButtonEl.addEventListener("click", function() {
 })
 
 onValue(moviesInDB, function(snapshot) {
-    let itemsArray = Object.entries( snapshot.val() )     
-    clearShoppoingListEl()
+    if(snapshot.exists()) {
+        let itemsArray = Object.entries( snapshot.val() )     
+        clearShoppoingListEl()
 
-    for(let i = 0; i < itemsArray.length; i++) {
-        let currentItem = itemsArray[i]
-        let currentItemID = currentItem[0]
-        let currentItemValue = currentItem[1]
+        for(let i = 0; i < itemsArray.length; i++) {
+            let currentItem = itemsArray[i]
+            let currentItemID = currentItem[0]
+            let currentItemValue = currentItem[1]
 
-        addShoppingListEl(currentItem)
-    } 
+            addShoppingListEl(currentItem)
+        } 
+    } else {
+        shoppingListEl.innerHTML = "No items here ...yet"
+    }
 })
 
 function clearInputField() {
