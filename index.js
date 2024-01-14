@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
 const appSettings = {
     databaseURL: "https://playground-344ad-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -21,10 +21,14 @@ addButtonEl.addEventListener("click", function() {
 })
 
 onValue(moviesInDB, function(snapshot) {
-    let itemsArray = Object.values( snapshot.val() )     
+    let itemsArray = Object.entries( snapshot.val() )     
     clearShoppoingListEl()
-    for( let i = 0; i < itemsArray.length; i++) {
+
+    for(let i = 0; i < itemsArray.length; i++) {
         let currentItem = itemsArray[i]
+        let currentItemID = currentItem[0]
+        let currentItemValue = currentItem[1]
+
         addShoppingListEl(currentItem)
     } 
 })
@@ -37,6 +41,26 @@ function clearShoppoingListEl() {
     shoppingListEl.innerHTML = ""
 }
 
-function addShoppingListEl(itemValue) {
-    shoppingListEl.innerHTML +=`<li> ${itemValue} </li>`
+function addShoppingListEl(item) {
+   let itemID = item[0]
+   let itemValue = item[1]
+
+   // shoppingListEl.innerHTML +=`<li> ${itemValue} </li>`
+
+   let newEl = document.createElement("li")
+   newEl.textContent = itemValue
+
+//    delete item from database 
+
+   newEl.addEventListener("click", function() {   
+        let exactLocationInDB = ref(database, `todo/${itemID}`)  
+        remove(exactLocationInDB)
+   })
+
+   shoppingListEl.append(newEl)
+
 }
+
+
+
+
